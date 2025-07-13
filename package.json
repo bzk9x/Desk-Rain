@@ -4,13 +4,15 @@
   "description": "",
   "main": "src/desk-rain/main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "package": "electron-packager . \"Disk Rain\" --platform=win32 --arch=x64 --icon=src/desk-rain/app/res/drawable/icon.ico --overwrite --asar --prune=true --ignore=\"^/node_modules/(?!your-used-modules)\" --no-deref-symlinks --out=dist"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
-    "electron": "^37.2.1"
+    "electron": "^37.2.1",
+    "electron-packager": "^17.1.2"
   }
 }
