@@ -7,13 +7,20 @@ function createWindow() {
     height: 600,
     frame: false,
     transparent: true,
+    alwaysOnTop: true,
+    minimizable: false,
+    resizable: false,
+    movable: false,
+    focusable: false,
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false
+      nodeIntegration: false,
+      contextIsolation: true,
     }
-  })
+});
 
-  win.loadFile('src/desk-rain/app/res/layout/index.html')
+  win.loadFile('src/desk-rain/app/res/layout/index.html');
+  win.setIgnoreMouseEvents(true, { forward: true });
+  win.maximize();
 }
 
 app.whenReady().then(() => {
