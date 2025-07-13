@@ -5,5 +5,14 @@ html, body {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 0, 0, 0.314);
+    border: 1px solid red; /* this is to tell if the app is running, this wont be in production */
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
