@@ -10,6 +10,26 @@ resizeCanvas();
 
 window.addEventListener('resize', resizeCanvas);
 
+const toast = document.getElementById('toast');
+let toastTimeout;
+
+function displayToast(message, duration = 5000) {
+    if (toastTimeout) {
+        clearTimeout(toastTimeout);
+    }
+    
+    toast.textContent = message;
+    toast.classList.add('show');
+    
+    toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+    }, duration);
+}
+
+document.addEventListener('show-toast', (event) => {
+    displayToast(event.detail);
+});
+
 const RAIN_ANGLE = -0.15;
 
 class SplashParticle {

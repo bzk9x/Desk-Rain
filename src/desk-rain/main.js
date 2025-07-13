@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, globalShortcut } = require('electron')
 const path = require('path')
 
 function createWindow() {
@@ -15,17 +15,28 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      enableRemoteModule: false
+      enableRemoteModule: false,
+      preload: path.join(__dirname, 'preload.js')
     }
 });
 
   win.loadFile('src/desk-rain/app/res/layout/index.html');
   win.setIgnoreMouseEvents(true, { forward: true });
   win.maximize();
+  
+  // Send a message to the renderer process to show the toast
+  win.webContents.on('did-finish-load', () => {
+    win.webContents.executeJavaScript('window.showToast("Press Alt+Q to stop the rain");');
+  });
 }
 
 app.whenReady().then(() => {
   createWindow()
+  
+  // Register the Alt+Q shortcut to quit the app
+  globalShortcut.register('Alt+Q', () => {
+    app.quit();
+  });
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -33,6 +44,11 @@ app.whenReady().then(() => {
     }
   })
 })
+
+app.on('will-quit', () => {
+  // Unregister the shortcut when the app is about to quit
+  globalShortcut.unregisterAll();
+});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
