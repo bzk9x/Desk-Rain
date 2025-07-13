@@ -1,0 +1,16 @@
+{
+  "name": "deskrain",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/desk-rain/main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "electron": "^37.2.1"
+  }
+}
