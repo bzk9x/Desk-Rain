@@ -29,8 +29,8 @@ ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 DisableProgramGroupPage=yes
 LicenseFile=C:\Users\USER\PATH\TO\PROJECT\deskrain\LICENSE.txt
-InfoBeforeFile=C:\Users\USER\PATH\TO\PROJECT\deskrain\HOW-TO_EXIT.txt
-InfoAfterFile=C:\Users\USER\PATH\TO\PROJECT\deskrain\HOW-TO_EXIT.txt
+InfoBeforeFile=C:\Users\USER\PATH\TO\PROJECT\deskrain\HOW_TO_EXIT.txt
+InfoAfterFile=C:\Users\USER\PATH\TO\PROJECT\deskrain\HOW_TO_EXIT.txt
 ; Remove the following line to run in administrative install mode (install for all users.)
 PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
