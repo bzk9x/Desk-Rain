@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; object-src 'none';">
+
+    <title>Desk Rain Settings</title>
+    
+    <link rel="stylesheet" href="../styles/settings.css">
+</head>
+<body>
+    <div class="settings-container">
+        <h1>Desk Rain Settings</h1>
+        
+        <div class="setting-group">
+            <label for="rainSpeed">Rain Speed</label>
+            <div class="slider-container">
+                <input type="range" id="rainSpeed" min="1" max="20" step="1" value="7">
+                <span id="rainSpeedValue">7</span>
+            </div>
+        </div>
+
+        <div class="setting-group">
+            <label for="rainDensity">Rain Density</label>
+            <div class="slider-container">
+                <input type="range" id="rainDensity" min="50" max="500" step="10" value="200">
+                <span id="rainDensityValue">200</span>
+            </div>
+        </div>
+
+        <div class="setting-group">
+            <label for="rainColor">Rain Color</label>
+            <input type="color" id="rainColor" value="#ffffff">
+        </div>
+
+        <div class="setting-group">
+            <label>Opacity</label>
+            <div class="double-slider">
+                <div>
+                    <label for="minOpacity">Min: </label>
+                    <input type="range" id="minOpacity" min="0" max="1" step="0.05" value="0.1">
+                    <span id="minOpacityValue">0.1</span>
+                </div>
+                <div>
+                    <label for="maxOpacity">Max: </label>
+                    <input type="range" id="maxOpacity" min="0" max="1" step="0.05" value="0.4">
+                    <span id="maxOpacityValue">0.4</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="setting-group">
+            <label for="rainDirection">Rain Direction (degrees)</label>
+            <div class="slider-container">
+                <input type="range" id="rainDirection" min="-45" max="45" step="1" value="-9">
+                <span id="rainDirectionValue">-9</span>
+            </div>
+        </div>
+
+        <div class="setting-group checkbox">
+            <label for="splashToggle">Enable Splash Effects</label>
+            <input type="checkbox" id="splashToggle" checked>
+        </div>
+
+        <div class="setting-group">
+            <label for="splashIntensity">Splash Intensity</label>
+            <div class="slider-container">
+                <input type="range" id="splashIntensity" min="1" max="10" step="1" value="3">
+                <span id="splashIntensityValue">3</span>
+            </div>
+        </div>
+
+        <div class="setting-group checkbox">
+            <label for="soundToggle">Enable Rain Sound</label>
+            <input type="checkbox" id="soundToggle">
+        </div>
+
+        <div class="button-group">
+            <button id="resetButton">Reset to Defaults</button>
+            <button id="saveButton">Save Settings</button>
+        </div>
+    </div>
+
+    <script src="../../renderer/settings.js"></script>
+</body>
+</html>

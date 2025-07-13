@@ -30,7 +30,21 @@ document.addEventListener('show-toast', (event) => {
     displayToast(event.detail);
 });
 
-const RAIN_ANGLE = -0.15;
+let settings = {
+    rainSpeed: 7,
+    rainDensity: 200,
+    rainColor: '#ffffff',
+    minOpacity: 0.1,
+    maxOpacity: 0.4,
+    rainDirection: -9,
+    splashEnabled: true,
+    splashIntensity: 3,
+    soundEnabled: false
+};
+
+let RAIN_ANGLE = settings.rainDirection * (Math.PI / 180);
+
+let rainAudio = null;
 
 class SplashParticle {
     constructor(x, y, opacity) {
@@ -62,7 +76,9 @@ class SplashParticle {
     draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+
+        const color = hexToRgb(settings.rainColor);
+        ctx.fillStyle = `rgba(${color.r}, ${color.g}, ${color.b}, ${this.opacity})`;
         ctx.fill();
     }
 }
@@ -76,20 +92,20 @@ class RainDrop {
         this.x = Math.random() * (canvas.width * 1.5);
         this.y = -10 - Math.random() * 100; 
         this.length = 10 + Math.random() * 30; 
-        this.speed = 5 + Math.random() * 10; 
+        this.speed = settings.rainSpeed * (0.7 + Math.random() * 0.6); 
         this.thickness = 1 + Math.random() * 2; 
-        this.opacity = 0.1 + Math.random() * 0.4;
+        this.opacity = settings.minOpacity + Math.random() * (settings.maxOpacity - settings.minOpacity);
         this.splashed = false;
     }
     
     update(deltaTime, splashParticles) {
-        const angleInRadians = RAIN_ANGLE * Math.PI;
+        const angleInRadians = RAIN_ANGLE;
 
         this.x += Math.sin(angleInRadians) * this.speed;
         this.y += Math.cos(angleInRadians) * this.speed;
 
         if (this.y > canvas.height) {
-            if (!this.splashed) {
+            if (!this.splashed && settings.splashEnabled) {
                 this.createSplash(splashParticles);
                 this.splashed = true;
             }
@@ -100,11 +116,11 @@ class RainDrop {
     }
     
     createSplash(splashParticles) {
-        const angleInRadians = RAIN_ANGLE * Math.PI;
+        const angleInRadians = RAIN_ANGLE;
         const impactX = this.x + Math.sin(angleInRadians) * 
             ((canvas.height - this.y) / Math.cos(angleInRadians));
 
-        const particleCount = 3 + Math.floor(Math.random() * 3);
+        const particleCount = settings.splashIntensity + Math.floor(Math.random() * 2);
         for (let i = 0; i < particleCount; i++) {
             splashParticles.push(new SplashParticle(impactX, canvas.height, this.opacity * 1.5));
         }
@@ -113,27 +129,58 @@ class RainDrop {
     draw() {
         ctx.beginPath();
 
-        const angleInRadians = RAIN_ANGLE * Math.PI;
+        const angleInRadians = RAIN_ANGLE;
         const endX = this.x + Math.sin(angleInRadians) * this.length;
         const endY = this.y + Math.cos(angleInRadians) * this.length;
         
         ctx.moveTo(this.x, this.y);
         ctx.lineTo(endX, endY);
-        ctx.strokeStyle = `rgba(255, 255, 255, ${this.opacity})`;
+
+        const color = hexToRgb(settings.rainColor);
+        ctx.strokeStyle = `rgba(${color.r}, ${color.g}, ${color.b}, ${this.opacity})`;
         ctx.lineWidth = this.thickness;
         ctx.stroke();
     }
 }
 
-const rainDropCount = 200;
-const rainDrops = [];
-const splashParticles = []; 
-
-for (let i = 0; i < rainDropCount; i++) {
-    rainDrops.push(new RainDrop());
-    rainDrops[i].y = Math.random() * canvas.height;
-    rainDrops[i].x = Math.random() * (canvas.width * 1.5);
+function hexToRgb(hex) {
+    hex = hex.replace('#', '');
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    
+    return { r, g, b };
 }
+
+let rainDrops = [];
+let splashParticles = [];
+
+function initializeRainDrops() {
+    rainDrops = [];
+    
+    for (let i = 0; i < settings.rainDensity; i++) {
+        rainDrops.push(new RainDrop());
+        rainDrops[i].y = Math.random() * canvas.height;
+        rainDrops[i].x = Math.random() * (canvas.width * 1.5);
+    }
+}
+
+function setupAudio() {
+    if (!rainAudio) {
+        rainAudio = new Audio('../res/sounds/rain.opus');
+        rainAudio.loop = true;
+    }
+    
+    if (settings.soundEnabled) {
+        rainAudio.play().catch(error => {
+            console.error('Error playing audio:', error);
+        });
+    } else if (rainAudio) {
+        rainAudio.pause();
+    }
+}
+
+initializeRainDrops();
 
 let lastTime = 0;
 
@@ -160,6 +207,27 @@ function animate(currentTime) {
     }
     
     requestAnimationFrame(animate);
+}
+
+if (window.electronAPI) {
+    window.electronAPI.updateSettings((event, newSettings) => {
+        settings = newSettings;
+
+        RAIN_ANGLE = settings.rainDirection * (Math.PI / 180);
+
+        if (rainDrops.length !== settings.rainDensity) {
+            initializeRainDrops();
+        }
+
+        rainDrops.forEach(drop => {
+            drop.speed = settings.rainSpeed * (0.7 + Math.random() * 0.6);
+            drop.opacity = settings.minOpacity + Math.random() * (settings.maxOpacity - settings.minOpacity);
+        });
+
+        setupAudio();
+    });
+
+    window.electronAPI.requestSettings();
 }
 
 animate();
